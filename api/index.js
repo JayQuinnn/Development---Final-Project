@@ -2,22 +2,22 @@ const knex = require('knex')({
     client: 'pg',
     connection: {
         host: 'pg',
-        port: 5438,
+        port: 5432,
         user: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DATABASE
     }
 });
-knex.schema.createTable('users', (table) => {
-    table.increments('id')
-    table.string('name')
-    table.integer('email')
-}).then(() => {
-    knex('users').insert({
-        name: "Jai Quinn",
-        email: 'hi@example.com'
-    })
-})
+// knex.schema.createTable('users', (table) => {
+//     table.increments('id')
+//     table.string('name')
+//     table.integer('email')
+// }).then(() => {
+//     knex('users').insert({
+//         name: "Jai Quinn",
+//         email: 'hi@example.com'
+//     })
+// })
 const bodyParser = require('body-parser');
 const { response } = require('express');
 const express = require('express');
