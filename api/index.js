@@ -8,20 +8,8 @@ const knex = require('knex')({
         database: process.env.POSTGRES_DATABASE
     }
 });
-// knex.schema.createTable('users', (table) => {
-//     table.increments('id')
-//     table.string('name')
-//     table.integer('email')
-// }).then(() => {
-//     knex('users').insert({
-//         name: "Jai Quinn",
-//         email: 'hi@example.com'
-//     })
-// })
 const bodyParser = require('body-parser');
-const { response } = require('express');
 const express = require('express');
-const { request } = require('http');
 const server = express();
 const PORT = process.env.PORT;
 const OWNER = {
@@ -60,3 +48,26 @@ server.post('/owner', (req, res) => {
 server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}.`)
 })
+initTables()
+/**
+ * Automatically creates a default table in case it doesn't exist yet.
+ * The table consists of the following fields: id, first_name, last_name, description, class and race.
+ */
+function initTables() {
+    console.log('Initialising Tables...')
+    knex.schema.hasTable('users').then(function (exists) {
+        if (!exists) {
+            console.log(`Table 'users' doesn't exist, now creating.`)
+            return knex.schema.createTable('users', function (t) {
+                t.increments('id').primary();
+                t.string('first_name', 100);
+                t.string('last_name', 100);
+                t.text('description');
+            });
+            console.log('Table Users has been created.')
+        }
+        else {
+            console.log(`Table 'users' already exists. Skipping creation.`)
+        }
+    });
+}
