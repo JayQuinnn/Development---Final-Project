@@ -1,12 +1,17 @@
-const knex = require('knex')({
-    client: 'pg',
-    connection: {
-        host: 'pg',
-        port: 5432,
-        user: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DATABASE
-    }
+// const knex = require('knex')({
+//     client: 'pg',
+//     connection: {
+//         host: 'pg',
+//         port: 5432,
+//         user: process.env.POSTGRES_USER,
+//         password: process.env.POSTGRES_PASSWORD,
+//         database: process.env.POSTGRES_DATABASE
+//     }
+// });
+const knex = require("knex")({
+    client: "pg",
+    connection: process.env.PG_CONNECTION_STRING,
+    searchPath: ["knex", "public"],
 });
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -44,6 +49,28 @@ server.post('/owner', (req, res) => {
     arrayOfOwners.push(newOwner);
     res.status(200).send();
 })
+/**
+ * When a user posts the required data to this endpoint, the api will handle the data and put
+ * it in a new object which will be sent of to a new function to handle database integration.
+ * @returns a 200 in case adding it is successful.
+ */
+server.post('/characters', (req, res) => {
+    let ownerID = req.body.ownerID;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let description = req.body.description;
+    let character_race = req.body.character_race;
+    let character_class = req.body.character_class;
+    let newCharacter = { ownerID, first_name, last_name, description, character_race, character_class };
+    //TO DO: create a function (test-made to add the new character to the db)
+    res.status(200).send();
+})
+server.put('characters/:ownerID/:first_name/:last_name', (req, res) => {
+    let ownerID = req.params.ownerID;
+    let originalName = req.params.first_name;
+    let originalLastName = req.params.last_name;
+    res.status(200).send();
+})
 
 server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}.`)
@@ -53,9 +80,9 @@ initTables()
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
  */
-function initTables() {
+async function initTables() {
     console.log('Initialising Tables...')
-    knex.schema.hasTable('users').then(function (exists) {
+    await knex.schema.hasTable('users').then(function (exists) {
         if (!exists) {
             console.log(`Table 'users' doesn't exist, now creating.`)
             return knex.schema.createTable('users', function (t) {
