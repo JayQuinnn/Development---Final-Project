@@ -65,10 +65,16 @@ server.post('/characters', (req, res) => {
     //TO DO: create a function (test-made to add the new character to the db)
     res.status(200).send();
 })
+
+/**
+ * Depending on the given parameters, a specific row of data will be updated.
+ * @returns a 200 status code in case updating was successful.
+ */
 server.put('characters/:ownerID/:first_name/:last_name', (req, res) => {
     let ownerID = req.params.ownerID;
     let originalName = req.params.first_name;
     let originalLastName = req.params.last_name;
+    //TO DO: Create a function (test-made) to update a specific row.
     res.status(200).send();
 })
 
@@ -80,7 +86,7 @@ initTables()
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
  */
-async function initTables() {
+export async function initTables() {
     console.log('Initialising Tables...')
     await knex.schema.hasTable('users').then(function (exists) {
         if (!exists) {
