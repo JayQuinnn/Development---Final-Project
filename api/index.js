@@ -9,7 +9,7 @@
 //     }
 // });
 module.exports = {
-    initTables, delCharacter, addCharacter,
+    initTables, delCharacter, addCharacter, getCharacter, getAllCharacters
 }
 const knex = require("knex")({
     client: "pg",
@@ -20,11 +20,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const server = express();
 const PORT = process.env.PORT;
-const OWNER = {
-    name: 'Jai Quinn',
-    age: 20
-}
-let arrayOfOwners = [OWNER];
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: false }))
 /**
@@ -36,24 +31,7 @@ server.get('/', (req, res) => {
         res.send(data);
     });
 });
-/**
- * API endpoint that a user can connect to in order to get information about the owners.
- * @returns {array} the API will respond with the information of the owner(s) in a JSON version of an ARRAY.
- */
-server.get('/owner', (req, res) => {
-    res.json(arrayOfOwners);
-})
-/**
- * When a user posts to this endpoint, the API will push the data to the arrayOfOwners variable.
- * @returns a 200 status in case it's successful.
- */
-server.post('/owner', (req, res) => {
-    let name = req.body.name;
-    let email = req.body.email;
-    let newOwner = { name: name, email: email };
-    arrayOfOwners.push(newOwner);
-    res.status(200).send();
-})
+
 /**
  * When a user posts the required data to this endpoint, the api will handle the data and put
  * it in a new object which will be sent of to a new function to handle database integration.
@@ -76,11 +54,18 @@ server.post('/characters/add', (req, res) => {
  * Depending on the given parameters, a specific row of data will be updated.
  * @returns a 200 status code in case updating was successful.
  */
-server.put('/characters/:ownerID/:firstName/:lastName', (req, res) => {
-    let ownerID = req.params.ownerID;
-    let firstName = req.params.firstName;
-    let lastName = req.params.lastName;
-    //TO DO: Create a function (test-made) to update a specific row.
+server.put('/characters/update', (req, res) => {
+    console.log(req.body.ownerID)
+    let ownerID = req.body.ownerID;
+    let originalName = req.body.originalName
+    let originalLastName = req.body.originalLastName
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    let description = req.body.description;
+    let characterRace = req.body.characterRace;
+    let characterClass = req.body.characterClass;
+    let newCharacter = { ownerID, originalName, originalLastName, firstName, lastName, description, characterRace, characterClass };
+    updateCharacter(newCharacter)
     res.status(200).send();
 })
 
@@ -115,7 +100,38 @@ server.listen(PORT, () => {
 })
 initTables()
 
+async function updateCharacter(Character) {
+    await knex.table('tblCharacters')
+        .where('ownerID', Character.ownerID)
+        .where('firstName', Character.originalName)
+        .where('lastName', Character.originalLastName)
+        .update({
+            ownerID: Character.ownerID,
+            firstName: Character.firstName,
+            lastName: Character.lastName,
+            description: Character.description,
+            characterRace: Character.characterRace,
+            characterClass: Character.characterClass
+        })
+    console.log(`Updated character ${Character.originalName} ${Character.originalLastName} to ${Character.firstName} ${Character.lastName}`)
+}
+async function getAllCharacters() {
+    let result = knex.select().table('tblCharacters').then(function (data) {
+        return data
+    });
+    return result
+}
 
+async function getCharacter(firstName, lastName) {
+    let result = knex.select()
+        .table('tblCharacters')
+        .where('firstName', firstName)
+        .where('lastName', lastName)
+        .then(function (data) {
+            return data
+        });
+    return result
+}
 
 /**
  * The function will delete a character from the Characters table depending on the owner information.
@@ -157,7 +173,7 @@ async function initTables() {
             console.log(`Table 'tblCharacters' doesn't exist, now creating.`)
             return knex.schema.createTable('tblCharacters', function (t) {
                 t.increments('characterID').primary();
-                t.integer('ownerID')
+                t.double('ownerID')
                 t.string('firstName', 100);
                 t.string('lastName', 100);
                 t.text('description');
