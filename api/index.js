@@ -69,6 +69,13 @@ server.put('/characters/update', (req, res) => {
     res.status(200).send();
 })
 
+/** 
+ * This endpoint will delete a specific row, depending on the OwnerID, firstName and lastName.
+ * @param {id} OwnerID
+ * @param {string} firstName
+ * @param {string} lastName
+ * @returns a 200 status code in case it's successful.
+ */
 server.delete('/characters/del', (req, res) => {
     let ownerID = req.body.ownerID;
     let firstName = req.body.firstName;
@@ -100,6 +107,11 @@ server.listen(PORT, () => {
 })
 initTables()
 
+
+/**
+ * The function will update the entire database data. Which specific character will depend on the originalName field.
+ * @param {Object} Character 
+ */
 async function updateCharacter(Character) {
     await knex.table('tblCharacters')
         .where('ownerID', Character.ownerID)
@@ -115,6 +127,11 @@ async function updateCharacter(Character) {
         })
     console.log(`Updated character ${Character.originalName} ${Character.originalLastName} to ${Character.firstName} ${Character.lastName}`)
 }
+
+/**
+ * 
+ * @returns the full datasheet of the table 'tblcharacters'
+ */
 async function getAllCharacters() {
     let result = knex.select().table('tblCharacters').then(function (data) {
         return data
@@ -122,6 +139,13 @@ async function getAllCharacters() {
     return result
 }
 
+
+/**
+ * The function will look for a specific character, depending on the first and last name of the character
+ * @param {string} firstName 
+ * @param {string} lastName 
+ * @returns an object of all the available data of the result.
+ */
 async function getCharacter(firstName, lastName) {
     let result = knex.select()
         .table('tblCharacters')
