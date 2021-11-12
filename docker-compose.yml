@@ -2,6 +2,8 @@ version: "3.9"
 services:
   api:
     build: ./api
+    volumes:
+      - ./api:/usr/app
     environment:
       - PORT
       - PG_CONNECTION_STRING
@@ -15,6 +17,6 @@ services:
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - PSOTGRES_DB
+      - POSTGRES_DB
     ports:
       - 5432:5432

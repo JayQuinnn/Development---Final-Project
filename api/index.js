@@ -79,14 +79,14 @@ server.put('characters/:ownerID/:first_name/:last_name', (req, res) => {
 })
 
 server.listen(PORT, () => {
-    console.log(`Server is listenin at port ${PORT}.`)
+    console.log(`Server is listenin at port ${PORT}. I'm working!!!!`)
 })
 initTables()
 /**
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
  */
-export async function initTables() {
+async function initTables() {
     console.log('Initialising Tables...')
     await knex.schema.hasTable('users').then(function (exists) {
         if (!exists) {
