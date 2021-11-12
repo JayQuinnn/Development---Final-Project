@@ -8,6 +8,9 @@
 //         database: process.env.POSTGRES_DATABASE
 //     }
 // });
+module.exports = {
+    initTables, delCharacter, addCharacter,
+}
 const knex = require("knex")({
     client: "pg",
     connection: process.env.PG_CONNECTION_STRING,
@@ -29,7 +32,9 @@ server.use(bodyParser.urlencoded({ extended: false }))
  * @returns {string} the API will respond with 'Hello World' in the BODY.
  */
 server.get('/', (req, res) => {
-    res.send('Hello World!');
+    knex.select().table('tblCharacters').then(function (data) {
+        res.send(data);
+    });
 });
 /**
  * API endpoint that a user can connect to in order to get information about the owners.
@@ -55,14 +60,15 @@ server.post('/owner', (req, res) => {
  * @returns a 200 in case adding it is successful.
  */
 server.post('/characters/add', (req, res) => {
+    console.log(req.body.ownerID)
     let ownerID = req.body.ownerID;
-    let first_name = req.body.first_name;
-    let last_name = req.body.last_name;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
     let description = req.body.description;
-    let character_race = req.body.character_race;
-    let character_class = req.body.character_class;
-    let newCharacter = { ownerID, first_name, last_name, description, character_race, character_class };
-    //TO DO: create a function (test-made to add the new character to the db)
+    let characterRace = req.body.characterRace;
+    let characterClass = req.body.characterClass;
+    let newCharacter = { ownerID, firstName, lastName, description, characterRace, characterClass };
+    addCharacter(newCharacter)
     res.status(200).send();
 })
 
@@ -70,12 +76,26 @@ server.post('/characters/add', (req, res) => {
  * Depending on the given parameters, a specific row of data will be updated.
  * @returns a 200 status code in case updating was successful.
  */
-server.put('characters/:ownerID/:first_name/:last_name', (req, res) => {
+server.put('/characters/:ownerID/:firstName/:lastName', (req, res) => {
     let ownerID = req.params.ownerID;
-    let originalName = req.params.first_name;
-    let originalLastName = req.params.last_name;
+    let firstName = req.params.firstName;
+    let lastName = req.params.lastName;
     //TO DO: Create a function (test-made) to update a specific row.
     res.status(200).send();
+})
+
+server.delete('/characters/del', (req, res) => {
+    let ownerID = req.body.ownerID;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    let Character = {
+        ownerID: ownerID,
+        firstName: firstName,
+        lastName: lastName
+    }
+    console.log(`Deleting character ${firstName} ${lastName}`)
+    delCharacter(Character)
+    res.status(200).send()
 })
 
 /**
@@ -94,18 +114,45 @@ server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}. I'm working!!!!`)
 })
 initTables()
+
+
+
+/**
+ * The function will delete a character from the Characters table depending on the owner information.
+ * @param {delCharacter} delCharacter includes ownerID, firstName and lastName.
+ */
+async function delCharacter(Character) {
+    await knex.table('tblCharacters')
+        .where('ownerID', Character.ownerID)
+        .where('firstName', Character.firstName)
+        .where('lastName', Character.lastName)
+        .del()
+    console.log(`Deleted character ${Character.firstName} ${Character.lastName}`)
+}
+/**
+ * Function will add a new character to the table. 
+ * @param {Character} Character includes ownerID, firstName, lastName, Descirption, characterRace, characterClass.
+ */
+async function addCharacter(Character) {
+    await knex.table('tblCharacters')
+        .insert({
+            ownerID: Character.ownerID,
+            firstName: Character.firstName,
+            lastName: Character.lastName,
+            description: Character.description,
+            characterRace: Character.characterRace,
+            characterClass: Character.characterClass
+        })
+    console.log(`Added Character ${Character.firstName} ${Character.lastName}`)
+}
+
 /**
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
  */
-
-async function delCharacter() {
-
-}
-
 async function initTables() {
     console.log('Initialising Tables...')
-    await knex.schema.hasTable('users').then(function (exists) {
+    await knex.schema.hasTable('tblCharacters').then(function (exists) {
         if (!exists) {
             console.log(`Table 'tblCharacters' doesn't exist, now creating.`)
             return knex.schema.createTable('tblCharacters', function (t) {

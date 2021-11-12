@@ -1,0 +1,1 @@
+const { initTables } = require('../index')
