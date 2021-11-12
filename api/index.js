@@ -54,7 +54,7 @@ server.post('/owner', (req, res) => {
  * it in a new object which will be sent of to a new function to handle database integration.
  * @returns a 200 in case adding it is successful.
  */
-server.post('/characters', (req, res) => {
+server.post('/characters/add', (req, res) => {
     let ownerID = req.body.ownerID;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
@@ -78,6 +78,18 @@ server.put('characters/:ownerID/:first_name/:last_name', (req, res) => {
     res.status(200).send();
 })
 
+/**
+ * Depending on the given parameters, a specific row of data will be returned.
+ * @returns an object in case updating was successful, containing data of the requested Character.
+ */
+server.get('characters/:ownerID/:first_name/:last_name', (req, res) => {
+    let ownerID = req.params.ownerID;
+    let originalName = req.params.first_name;
+    let originalLastName = req.params.last_name;
+    //TO DO: Create a function (test-made) to return a specific row.
+    res.status(200).send();
+})
+
 server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}. I'm working!!!!`)
 })
@@ -86,21 +98,29 @@ initTables()
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
  */
+
+async function delCharacter() {
+
+}
+
 async function initTables() {
     console.log('Initialising Tables...')
     await knex.schema.hasTable('users').then(function (exists) {
         if (!exists) {
-            console.log(`Table 'users' doesn't exist, now creating.`)
-            return knex.schema.createTable('users', function (t) {
-                t.increments('id').primary();
-                t.string('first_name', 100);
-                t.string('last_name', 100);
+            console.log(`Table 'tblCharacters' doesn't exist, now creating.`)
+            return knex.schema.createTable('tblCharacters', function (t) {
+                t.increments('characterID').primary();
+                t.integer('ownerID')
+                t.string('firstName', 100);
+                t.string('lastName', 100);
                 t.text('description');
+                t.string('characterRace', 25);
+                t.string('characterClass', 25)
             });
-            console.log('Table Users has been created.')
+            console.log('Table tblCharacters has been created.')
         }
         else {
-            console.log(`Table 'users' already exists. Skipping creation.`)
+            console.log(`Table 'tblCharacters' already exists. Skipping creation.`)
         }
     });
 }
