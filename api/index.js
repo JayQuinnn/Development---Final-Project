@@ -94,12 +94,14 @@ server.delete('/characters/del', (req, res) => {
  * Depending on the given parameters, a specific row of data will be returned.
  * @returns an object in case updating was successful, containing data of the requested Character.
  */
-server.get('characters/:ownerID/:first_name/:last_name', (req, res) => {
-    let ownerID = req.params.ownerID;
-    let originalName = req.params.first_name;
-    let originalLastName = req.params.last_name;
+server.get('/characters/search/:firstName/:lastName', (req, res) => {
+    let firstName = req.params.firstName;
+    let lastName = req.params.lastName;
+    getCharacter(firstName, lastName).then(function (data) {
+        res.send(data)
+    });
     //TO DO: Create a function (test-made) to return a specific row.
-    res.status(200).send();
+
 })
 
 server.listen(PORT, () => {
@@ -145,14 +147,18 @@ async function getAllCharacters() {
  * @param {string} firstName 
  * @param {string} lastName 
  * @returns an object of all the available data of the result.
+ * ERRORS: When 
  */
 async function getCharacter(firstName, lastName) {
-    let result = knex.select()
+    console.log(`Looking for character ${firstName} ${lastName}`)
+    let result
+    await knex.select()
         .table('tblCharacters')
         .where('firstName', firstName)
         .where('lastName', lastName)
         .then(function (data) {
-            return data
+            console.log(data)
+            result = data[0]
         });
     return result
 }
