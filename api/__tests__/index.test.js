@@ -4,8 +4,8 @@ const knex = require("knex")({
     connection: process.env.PG_CONNECTION_STRING,
     searchPath: ["knex", "public"],
 });
-
-test("addCharacter -> Trying to add a character", () => {
+//Yea, I have no idea why this passes.
+test("addCharacter, getCharacter -> Trying to add (and get) a character", () => {
     const Character = {
         ownerID: 24,
         firstName: 'Cirilla',
@@ -22,4 +22,16 @@ test("addCharacter -> Trying to add a character", () => {
             expect(result).toBe(Character);
         })
     })
+});
+// Doesnt work.
+test("delCharacter -> Trying to DELETE a character", () => {
+    const Character = {
+        ownerID: 24,
+        firstName: 'Cirilla',
+        lastName: 'Dash',
+    }
+    delCharacter(Character).then(function () {
+        expect(getCharacter('Cirilla', 'Dash')).toBe(null)
+    })
+
 });
