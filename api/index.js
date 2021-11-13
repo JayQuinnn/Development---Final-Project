@@ -26,7 +26,7 @@ server.use(bodyParser.urlencoded({ extended: false }))
  * API endpoint that a user can connect to which will reply with 'Hello World'.
  * @returns {string} the API will respond with 'Hello World' in the BODY.
  */
-server.get('/', (req, res) => {
+server.get('/characters', (req, res) => {
     knex.select().table('tblCharacters').then(function (data) {
         res.send(data);
     });
