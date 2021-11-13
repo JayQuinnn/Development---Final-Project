@@ -1,4 +1,9 @@
 const { initTables, delCharacter, addCharacter, getAllCharacters, getCharacter } = require('../index')
+const knex = require("knex")({
+    client: "pg",
+    connection: process.env.PG_CONNECTION_STRING,
+    searchPath: ["knex", "public"],
+});
 
 test("addCharacter -> Trying to add a character", () => {
     const Character = {
@@ -11,6 +16,10 @@ test("addCharacter -> Trying to add a character", () => {
         characterRace: 'Eladrin',
         characterClass: 'Sorcerer'
     }
-    addCharacter(Character)
-
+    addCharacter(Character, 'color: #FF0000').then(function () {
+        result = getCharacter('Cirilla', 'Dash').then(function () {
+            console.log(result, 'color: #bada55')
+            expect(result).toBe(Character);
+        })
+    })
 });

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch-all --legacy-watch",
+    "test": "jest --watch-all --coverage",
     "start": "node index.js"
   },
   "keywords": [],
