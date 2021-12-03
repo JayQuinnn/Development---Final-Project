@@ -216,4 +216,17 @@ async function initTables() {
             console.log(`Table 'tblCharacters' already exists. Skipping creation.`)
         }
     });
+    await knex.schema.hasTable('tblRace').then(function (exists) {
+        if (!exists) {
+            console.log(`Table 'tblRace' doesn't exist, now creating.`)
+            return knex.schema.createTable('tblRace', function (t) {
+                t.increments('raceID').primary();
+                t.enu('race')
+            });
+            console.log('Table tblRace has been created.')
+        }
+        else {
+            console.log(`Table 'tblRace' already exists. Skipping creation.`)
+        }
+    });
 }
