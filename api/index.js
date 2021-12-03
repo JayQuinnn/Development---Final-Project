@@ -243,6 +243,14 @@ async function initRaceTable() {
         .insert([{ characterRace: 'Elf' }, { characterRace: 'Half Elf' }, { characterRace: 'High Elf' }, { characterRace: 'Drow' }, { characterRace: 'Human' }, { characterRace: 'Orc' }]);
 }
 
-async function raceToID() {
-
+async function raceToID(characterRace) {
+    let result
+    await knex.select()
+        .table('tblRaces')
+        .where('characterRace', characterRace)
+        .then(function (data) {
+            console.log(data)
+            result = data[0].raceID
+        });
+    return result
 }
