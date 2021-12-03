@@ -216,17 +216,33 @@ async function initTables() {
             console.log(`Table 'tblCharacters' already exists. Skipping creation.`)
         }
     });
-    await knex.schema.hasTable('tblRace').then(function (exists) {
+    await knex.schema.hasTable('tblRaces').then(function (exists) {
+        if (exists) {
+            return knex.schema.dropTable('tblRaces')
+        }
+    })
+    await knex.schema.hasTable('tblRaces').then(function (exists) {
         if (!exists) {
-            console.log(`Table 'tblRace' doesn't exist, now creating.`)
-            return knex.schema.createTable('tblRace', function (t) {
+            console.log(`Table 'tblRaces' doesn't exist, now creating.`)
+            return knex.schema.createTable('tblRaces', function (t) {
                 t.increments('raceID').primary();
-                t.enu('race')
+                t.string('characterRace')
             });
-            console.log('Table tblRace has been created.')
+            console.log('Table tblRaces has been created.')
         }
         else {
-            console.log(`Table 'tblRace' already exists. Skipping creation.`)
+            console.log(`Table 'tblRaces' already exists. Skipping creation.`)
         }
     });
+    await initRaceTable()
+}
+
+async function initRaceTable() {
+    console.log('Initialising tblRaces')
+    await knex.table('tblRaces')
+        .insert([{ characterRace: 'Elf' }, { characterRace: 'Half Elf' }, { characterRace: 'High Elf' }, { characterRace: 'Drow' }, { characterRace: 'Human' }, { characterRace: 'Orc' }]);
+}
+
+async function raceToID() {
+
 }
