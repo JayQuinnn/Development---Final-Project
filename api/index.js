@@ -35,7 +35,8 @@ server.post('/characters/add', (req, res) => {
     let description = req.body.description;
     let characterRace = req.body.characterRace;
     let characterClass = req.body.characterClass;
-    let newCharacter = { ownerID, firstName, lastName, description, characterRace, characterClass };
+    let characterRaceID = raceToID(characterRace)
+    let newCharacter = { ownerID, firstName, lastName, description, characterRaceID, characterClass };
     addCharacter(newCharacter)
     res.status(200).send();
 })
@@ -176,7 +177,7 @@ async function addCharacter(Character) {
             firstName: Character.firstName,
             lastName: Character.lastName,
             description: Character.description,
-            characterRace: Character.characterRace,
+            characterRaceID: Character.characterRaceID,
             characterClass: Character.characterClass
         })
     console.log(`Added Character ${Character.firstName} ${Character.lastName}`)
@@ -265,7 +266,31 @@ async function dropCustomTable(table) {
         }
     })
 }
-
+ /**
+  * This function will add 3 characters to the tblCharacters table. You can disable this function in case you know how the database works.
+  */
 async function addDummyData() {
-
+    await knex.table('tblCharacters')
+        .insert([{
+            ownerID: 1,
+            firstName: 'Jai',
+            lastName: 'Quinn',
+            description: 'Exhiled as a teenager, he had to fight and take on a hard life in order to survive.',
+            characterRaceID: 1,
+            characterClass: 'Rogue'
+        }, {
+            ownerID: 1,
+            firstName: 'Cirilla',
+            lastName: 'Dash',
+            description: `What once used to be a great sorcerer, got thrown of her throne. Now she's looking for revenge on the council who kicked her off her throne.`,
+            characterRaceID: 4,
+            characterClass: 'Sorcerer'
+        }, {
+            ownerID: 1,
+            firstName: 'Cobble',
+            lastName: '',
+            description: `Made out of stone..I didn't get time to think about this Character`,
+            characterRaceID: 6,
+            characterClass: 'Paladin'
+        }])
 }
