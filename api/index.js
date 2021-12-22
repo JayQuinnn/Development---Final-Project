@@ -1,13 +1,3 @@
-// const knex = require('knex')({
-//     client: 'pg',
-//     connection: {
-//         host: 'pg',
-//         port: 5432,
-//         user: process.env.POSTGRES_USER,
-//         password: process.env.POSTGRES_PASSWORD,
-//         database: process.env.POSTGRES_DATABASE
-//     }
-// });
 module.exports = {
     initTables, delCharacter, addCharacter, getCharacter, getAllCharacters, raceToID
 }
@@ -195,6 +185,7 @@ async function addCharacter(Character) {
 /**
  * Automatically creates a default table in case it doesn't exist yet.
  * The table consists of the following fields: id, first_name, last_name, description, class and race.
+ * Also creates the second 'Races' table where all possible d&d races get sent to
  */
 async function initTables() {
     console.log('Initialising Tables...')
@@ -236,13 +227,20 @@ async function initTables() {
     });
     await initRaceTable()
 }
-
+/**
+ * This function will create the 'race' table. It will also put in the following d&d compatible races:
+ * Elf, Half Elf, High Elf, Drow, Human, and Orc.
+ */
 async function initRaceTable() {
     console.log('Initialising tblRaces')
     await knex.table('tblRaces')
         .insert([{ characterRace: 'Elf' }, { characterRace: 'Half Elf' }, { characterRace: 'High Elf' }, { characterRace: 'Drow' }, { characterRace: 'Human' }, { characterRace: 'Orc' }]);
 }
-
+/**
+ * 
+ * @param {String} characterRace. This is a name of the race that should be applied to the Character.
+ * @returns {Integer} result. will have the ID from the 'Race' table that links to the original Race string
+ */
 async function raceToID(characterRace) {
     let result
     await knex.select()
@@ -254,7 +252,11 @@ async function raceToID(characterRace) {
         });
     return result
 }
-
+/**
+ * 
+ * @param {String} table. A name of the table that should be dropped
+ * The function will then...drop this table. (This function is mainly used for cleanup)
+ */
 async function dropCustomTable(table) {
     console.log(`Removing table ${table}`)
     await knex.schema.hasTable(table).then(function (exists) {
@@ -263,4 +265,7 @@ async function dropCustomTable(table) {
         }
     })
 }
-dropCustomTable('tblRace');
+
+async function addDummyData() {
+
+}
