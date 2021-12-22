@@ -190,6 +190,57 @@ async function addRace(race) {
         .insert({ characterRace: race });
     console.log("Added new race: " + race)
 }
+/**
+ * @returns the full datasheet of the table 'tblRaces'
+ */
+async function showRaces() {
+    let result = knex.select().table('tblRaces').then(function (data) {
+        return data
+    });
+    return result
+}
+/**
+ * Function will find a race, to see if it's in the table or not.
+ * @param {String} race 
+ * @returns {String} result
+ */
+async function findRace(race) {
+    console.log(`Looking for race ${race}`)
+    let result
+    await knex.select()
+        .table('tblRaces')
+        .where('characterRace', race)
+        .then(function (data) {
+            console.log(data)
+            result = data[0]
+        });
+    return result
+}
+/**
+ * Function will delete a race from the tblRaces table
+ * @param {String} race 
+ */
+async function delRace(race) {
+    console.log(`Deleting race ${race}`)
+    await knex.select()
+        .table('tblRaces')
+        .where('characterRace', race)
+        .del()
+    console.log(`Deleted race ${race}`)
+}
+/**
+ * Function will edit a race from the table (y'know, in case of typo's)
+ * @param {String} originalRace 
+ * @param {String} newRace 
+ */
+async function updateRace(originalRace, newRace) {
+    await knex.table('tblRaces')
+        .where('characterRace', originalRace)
+        .update({
+            characterRace: newRace,
+        })
+    console.log(`Updated characterRace ${originalRace} to ${newRace}`)
+}
 
 /**
  * Automatically creates a default table in case it doesn't exist yet.
