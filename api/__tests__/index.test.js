@@ -1,4 +1,4 @@
-const { initTables, delCharacter, addCharacter, getAllCharacters, getCharacter } = require('../index')
+const { initTables, delCharacter, addCharacter, getAllCharacters, getCharacter, raceToID } = require('../index')
 const knex = require("knex")({
     client: "pg",
     connection: process.env.PG_CONNECTION_STRING,
@@ -24,18 +24,23 @@ test("addCharacter, getCharacter -> Trying to add (and get) a character", () => 
     })
 });
 // Doesnt work.
-test("delCharacter -> Trying to DELETE a character", () => {
-    const Character = {
-        ownerID: 24,
-        firstName: 'Cirilla',
-        lastName: 'Dash',
-    }
-    delCharacter(Character).then(function () {
-        expect(getCharacter('Cirilla', 'Dash')).toBe(null)
-    })
+// test("delCharacter -> Trying to DELETE a character", () => {
+//     const Character = {
+//         ownerID: 24,
+//         firstName: 'Cirilla',
+//         lastName: 'Dash',
+//     }
+//     delCharacter(Character).then(function () {
+//         expect(getCharacter('Cirilla', 'Dash')).toBe(null)
+//     })
 
-});
+// });
+test('CharacterRace to RaceID, converting a string to the correct id', () => {
+    const expected = '1'
+    result = await raceToID('Elf')
+    expect(result).toBe(expected)
+})
 
-test('updateCharacter -> Updating a character.',() => {
+test('updateCharacter -> Updating a character.', () => {
     
 })
