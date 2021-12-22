@@ -95,6 +95,31 @@ server.get('/characters/search/:firstName/:lastName', (req, res) => {
 
 })
 
+server.get('/races', async (req, res) => {
+    let result = showRaces();
+    res.send(result)
+})
+server.get('/races/:race', async (req, res) => {
+    let race = req.params.race;
+    let result = await findRace(race);
+    res.send(result)
+})
+server.post('/races/add', async (req, res) => {
+    let race = req.body.race
+    await addRace(race)
+    res.status(200).send()
+})
+server.put('/races/update', async (req, res) => {
+    let originalRace = req.body.originalRace;
+    let newRace = req.body.newRace;
+    await updateRace(originalRace, newRace)
+    res.status(200).send()
+})
+server.delete('/races/delete', async (req, res) => {
+    let race = req.body.race
+    delRace(race)
+    res.status(200).send()
+})
 server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}. I'm working!!!!`)
 })
