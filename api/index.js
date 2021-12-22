@@ -9,7 +9,7 @@
 //     }
 // });
 module.exports = {
-    initTables, delCharacter, addCharacter, getCharacter, getAllCharacters
+    initTables, delCharacter, addCharacter, getCharacter, getAllCharacters, raceToID
 }
 const knex = require("knex")({
     client: "pg",
