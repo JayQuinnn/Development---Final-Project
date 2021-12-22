@@ -94,32 +94,55 @@ server.get('/characters/search/:firstName/:lastName', (req, res) => {
     //TO DO: Create a function (test-made) to return a specific row.
 
 })
-
+/**
+ * This end-point will return the full race dataset.
+ */
 server.get('/races', async (req, res) => {
     let result = showRaces();
     res.send(result)
 })
+
+/**
+ * @param {String} race: a string of the race to look-up
+ * @returns {String} result: will return the Race if found.
+ */
 server.get('/races/:race', async (req, res) => {
     let race = req.params.race;
     let result = await findRace(race);
     res.send(result)
 })
+
+/** This end-point will add the given Race in order to use it later on
+ * @param {String} race: a name that you want to give the new race
+ */
 server.post('/races/add', async (req, res) => {
     let race = req.body.race
     await addRace(race)
     res.status(200).send()
 })
+
+/**
+ * This end-point will update the name of the given race. (y'know, in case of typo's)
+ * @param {String} originalRace
+ * @param {String} newRace
+ */
 server.put('/races/update', async (req, res) => {
     let originalRace = req.body.originalRace;
     let newRace = req.body.newRace;
     await updateRace(originalRace, newRace)
     res.status(200).send()
 })
+
+/**
+ * For when you want to delete a specific race from the data-set
+ * @param {String} race that you want to delete
+ */
 server.delete('/races/delete', async (req, res) => {
     let race = req.body.race
     delRace(race)
     res.status(200).send()
 })
+
 server.listen(PORT, () => {
     console.log(`Server is listenin at port ${PORT}. I'm working!!!!`)
 })
