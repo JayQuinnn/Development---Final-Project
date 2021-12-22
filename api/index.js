@@ -182,6 +182,14 @@ async function addCharacter(Character) {
         })
     console.log(`Added Character ${Character.firstName} ${Character.lastName}`)
 }
+/**
+ * @param {String} race will add a new usable race inside the database.
+ */
+async function addRace(race) {
+    await knex.table('tblRaces')
+        .insert({ characterRace: race });
+    console.log("Added new race: " + race)
+}
 
 /**
  * Automatically creates a default table in case it doesn't exist yet.
