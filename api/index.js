@@ -256,7 +256,7 @@ async function raceToID(characterRace) {
 }
 
 async function dropCustomTable(table) {
-    console.warn(`Removing table ${table}`)
+    console.log(`Removing table ${table}`)
     await knex.schema.hasTable(table).then(function (exists) {
         if (exists) {
             return knex.schema.dropTable(table)
