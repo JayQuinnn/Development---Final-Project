@@ -199,7 +199,7 @@ async function initTables() {
                 t.string('firstName', 100);
                 t.string('lastName', 100);
                 t.text('description');
-                t.string('characterRace', 25);
+                t.double('characterRaceID');
                 t.string('characterClass', 25)
             });
             console.log('Table tblCharacters has been created.')
@@ -227,6 +227,7 @@ async function initTables() {
         }
     });
     await initRaceTable()
+    // await addDummyData()
 }
 /**
  * This function will create the 'race' table. It will also put in the following d&d compatible races:
@@ -266,9 +267,9 @@ async function dropCustomTable(table) {
         }
     })
 }
- /**
-  * This function will add 3 characters to the tblCharacters table. You can disable this function in case you know how the database works.
-  */
+/**
+ * This function will add 3 characters to the tblCharacters table. You can disable this function in case you know how the database works.
+ */
 async function addDummyData() {
     await knex.table('tblCharacters')
         .insert([{
