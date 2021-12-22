@@ -16,7 +16,7 @@ the following links are available:
 [PUT] /characters/update
 [DELETE] /characters/del
 ```
-## Body for API
+## Body for characters API
 The required body parameters are:
 ```
 ownerID,
@@ -27,4 +27,13 @@ lastName,
 description, 
 characterRace, 
 characterClass
+``` 
+## Body for the tblRace API
+The required body parameters are:
+```
+race
+
+or when updating:
+originalRace
+newRace
 ``` 
